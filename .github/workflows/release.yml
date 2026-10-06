@@ -1,7 +1,7 @@
 name: Release
 
-# Nieuw versienummer in threads-activity-filter/manifest.json op main betekent automatisch:
-# Firefox-versie laten ondertekenen door Mozilla, GitHub-release maken en updates.json bijwerken.
+# A new version number in threads-activity-filter/manifest.json on main automatically:
+# has the Firefox version signed by Mozilla, creates a GitHub release and updates updates.json.
 on:
   push:
     branches: [main]
@@ -32,9 +32,9 @@ jobs:
           VERSION=$(python3 -c "import json;print(json.load(open('threads-activity-filter/manifest.json'))['version'])")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           if gh release view "v$VERSION" >/dev/null 2>&1; then
-            echo "Release v$VERSION bestaat al; verhoog het versienummer voor een nieuwe release."
+            echo "Release v$VERSION already exists; increase the version number to make a new release."
           elif [ -z "$AMO_JWT_ISSUER" ] || [ -z "$AMO_JWT_SECRET" ]; then
-            echo "::warning::Release v$VERSION overgeslagen: zet de repository secrets AMO_JWT_ISSUER en AMO_JWT_SECRET (zie README) en start deze workflow opnieuw."
+            echo "::warning::Release v$VERSION skipped: add the repository secrets AMO_JWT_ISSUER and AMO_JWT_SECRET (see README) and run this workflow again."
           else
             echo "release=true" >> "$GITHUB_OUTPUT"
           fi
@@ -50,13 +50,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Bouwen
+      - name: Build
         run: |
           python3 bouw.py
           mkdir -p build/firefox
           unzip -q "dist/threads-activity-filter-firefox-$VERSION.zip" -d build/firefox
 
-      - name: Ondertekenen bij Mozilla (niet openbaar)
+      - name: Sign with Mozilla (unlisted)
         env:
           AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
           AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
@@ -66,15 +66,18 @@ jobs:
           cp signed/*.xpi threadcheck-firefox.xpi
           cp "dist/threads-activity-filter-chrome-$VERSION.zip" threadcheck-chrome.zip
 
-      - name: GitHub-release maken
+      - name: Create GitHub release
         run: |
           gh release create "v$VERSION" threadcheck-firefox.xpi threadcheck-chrome.zip \
             --title "threadcheck $VERSION" \
-            --notes "**Firefox (pc en Android):** installeer \`threadcheck-firefox.xpi\`. Daarna werkt hij zichzelf automatisch bij.
-          **Chrome:** pak \`threadcheck-chrome.zip\` uit en laad de map via chrome://extensions → Ontwikkelaarsmodus → Uitgepakte extensie laden."
+            --notes "**How to install:** follow the simple step-by-step guide at https://github.com/blyoco/threadcheck#before-you-start
 
-      # Pas na de release, zodat de link in updates.json meteen werkt als Firefox hem ziet.
-      - name: updates.json bijwerken
+          - **Android phone or computer with Firefox:** use \`threadcheck-firefox.xpi\`. It updates itself automatically.
+          - **Computer with Chrome:** use \`threadcheck-chrome.zip\`.
+          - **iPhone / iPad:** not possible."
+
+      # Only after the release, so the link in updates.json works as soon as Firefox sees it.
+      - name: Update updates.json
         run: |
           python3 bouw.py updates threadcheck-firefox.xpi
           git config user.name "github-actions[bot]"
