@@ -1,15 +1,36 @@
-# threadcheck
+# threadcheck 🟢🔴
 
-A free add-on for the [Threads](https://www.threads.com) website. It puts a coloured dot in front of every name, so you can see at a glance who really takes part in conversations.
+### See at a glance who is real on Threads, and who is just a ghost.
 
-| Dot | Meaning |
+Threads is flooded with **ghost accounts**: profiles that automatically copy their Instagram posts and never reply to anyone, accounts that follow you but never say a word, and profiles you just can't figure out.
+
+Finding out who is actually real takes forever. Open a profile. Tap *Replies*. Scroll. Check the dates. Go back. Next profile. Again and again. It eats your time, and it's **really annoying**.
+
+**threadcheck does all of that for you, automatically.** It puts a small coloured dot in front of every name on Threads:
+
+| | |
 |---|---|
-| 🟢 | This person replies to other people. |
-| 🔴 | This person does not reply to anyone, or has not done so for a long time. Often an account that only copies its Instagram posts. |
-| ⚪ | Still being checked. Wait a few seconds. |
-| 🟠 | The check did not work. It will try again by itself. |
+| 🟢 **Real and active** | This person actually talks to people. They replied to someone recently. |
+| 🔴 **Ghost** | No replies at all, or not for months. Usually an account that only copies its Instagram posts. |
+| ⚪ **Checking…** | Give it a second. |
+| 🟠 **Couldn't check** | Don't worry, it tries again by itself. |
 
-You can tap or click a dot to change its colour yourself.
+No more guessing. No more clicking through profiles. Just scroll through Threads like you always do, and you instantly see who is worth your time.
+
+### Why you'll love it
+
+- ⏱️ **Saves you loads of time:** no more opening profile after profile to check if someone is real.
+- 😌 **Way less irritation:** spot ghost accounts *before* you reply, follow or get pulled into a conversation.
+- 👀 **Works while you scroll:** the dots appear by themselves, in your feed, on profiles and in replies.
+- 🙈 **Hide the ghosts:** one switch and red accounts disappear from your feed.
+- ✋ **You're the boss:** tap a dot to make someone green or red yourself.
+- 🔒 **Private and free:** no account, no sign-up, nothing sent anywhere. Everything stays on your own device.
+- 📱 **Phone and computer:** Android phones (with Firefox), and Firefox or Chrome on your computer.
+- 🔄 **Always up to date:** in Firefox, new versions install themselves.
+
+### 👉 [Install it in 5 minutes](#before-you-start)
+
+Easy step-by-step guide. No technical knowledge needed.
 
 ## What it looks like
 
