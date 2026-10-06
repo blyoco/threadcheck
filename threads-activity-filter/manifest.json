@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Threads Activity Filter • Test",
+  "version": "0.2.1",
+  "description": "Lokale test: markeer reply-activiteit en verberg handmatig gemarkeerde accounts.",
+  "permissions": [
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.threads.com/*",
+        "https://threads.com/*",
+        "https://www.threads.net/*",
+        "https://threads.net/*"
+      ],
+      "js": [
+        "evidence.js",
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ]
+}

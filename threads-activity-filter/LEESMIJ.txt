@@ -1,0 +1,209 @@
+UPDATE 0.2.1 — OOK OP ANDROID (FIREFOX)
+Dezelfde extensie werkt nu ook in Firefox, ook Firefox voor Android.
+Let op: alleen in de browser op threads.com, niet in de Threads-app.
+Chrome en Samsung Internet op Android ondersteunen geen eigen extensies.
+De map en zip voor Chrome werken hetzelfde als in 0.2.0.
+
+Bouwen: python bouw.py (in de map boven deze map). Dat maakt in dist/
+een Chrome-zip en een Firefox-zip.
+
+Eenmalig ondertekenen (Firefox installeert alleen ondertekende extensies):
+1. Ga op de pc naar addons.mozilla.org/developers en log in of maak
+   gratis een account.
+2. Kies Submit a New Add-on, en daarna On your own (niet openbaar).
+3. Upload dist/threads-activity-filter-firefox-<versie>.zip.
+4. Na de automatische controle (meestal een paar minuten) download je
+   het ondertekende .xpi-bestand.
+Bij elke nieuwe versie: versienummer verhogen, opnieuw bouwen en uploaden.
+
+Installeren op de Samsung:
+1. Installeer Firefox uit de Play Store en log in op threads.com.
+2. Zet het .xpi-bestand op de telefoon (mailen, Google Drive of USB).
+3. Firefox > Instellingen > Over Firefox > tik 5 keer op het Firefox-logo.
+4. Terug naar Instellingen > Extensie installeren uit bestand > kies .xpi.
+5. Zie je geen bolletjes? Ga naar Extensies > Threads Activity Filter >
+   Machtigingen en zet toegang tot threads.com aan.
+Tip: Firefox-menu > Toevoegen aan startscherm geeft een snelkoppeling
+naar Threads die met de filter opent.
+
+UPDATE 0.2.0
+Oorzaak van het oranje: Threads stuurt de header X-Frame-Options: DENY mee.
+Chrome weigert daardoor elk verborgen frame, en elke controle liep na 15
+seconden vast op een timeout. Frames werken dus nooit, ook niet langzaam.
+Nieuwe methode: de extensie haalt /@naam/replies op als gewone pagina (fetch)
+vanuit de geopende Threads-tab en leest de replies uit de gegevens die Threads
+zelf in die pagina meestuurt. Geen tabs, geen frames, geen headers omzeild.
+Snelheid: ongeveer 0,5 tot 1 seconde per account, zes tegelijk. De download
+stopt zodra het replies-blok binnen is.
+Groen: laatste reply aan iemand anders valt binnen de ingestelde periode.
+Rood: geen replies, of de laatste reply is ouder dan de periode.
+Reacties binnen je eigen draadje tellen niet als deelname.
+Oranje: ophalen mislukt; na 15 minuten wordt het opnieuw geprobeerd. Een
+eerder gelukt resultaat blijft dan staan. Bij afremmen door Threads (429)
+wacht de extensie een minuut en gaat dan verder.
+Ophalen gebeurt eerst zonder cookies; alleen als dat niets oplevert nog
+een keer met je eigen Threads-sessie.
+Na updaten: extensie herladen, Threads-tab vernieuwen. Alle oude oranje
+resultaten worden automatisch opnieuw gecontroleerd; handmatige keuzes blijven.
+Getest zonder ingelogde sessie op 40+ accounts uit de diagnose; de ingelogde
+variant is niet live getest.
+
+UPDATE 0.1.10
+Diagnose 0.1.9 toont load-event zonder verbinding met het frame-uitleesscript.
+De controle is daarom niet meer afhankelijk van window.name: de extensie
+koppelt een frame aan de wachtrij via tab-ID, frame-ID en het exacte account
+in het geladen profielpad. Ook een redirect naar het gewone profielpad kan
+nu verbinden, waarna de Replies-tab wordt geopend.
+Laaddiagnose toont nu of het framedocument leesbaar is, welke profielroute
+geladen is en of er scripts/tijdstempels/replytab zijn. Geen berichttekst.
+Dit corrigeert mogelijke verbindingsfouten; het bewijst niet dat Threads
+embedded profielen toestaat. Geen nieuwe tabs, geen gewijzigde kleuren bij fouten.
+Na herladen worden mislukte controles opnieuw geprobeerd. Bij oranje opnieuw
+Diagnose downloaden en delen; frameInfo onderscheidt laden van scriptverbinding.
+
+UPDATE 0.1.9
+Bolletje vóór de gebruikersnaam, op dezelfde regel. Toggle blijft groen/rood.
+Diagnose van oranje frame-controles uitgebreid met laadfase, content-script-
+verbinding en eventuele frame-src-beveiligingsmelding. Mislukte oude controles
+worden opnieuw geprobeerd bij de update. Geen nieuwe tabs.
+Deze versie repareert de positie en verzamelt bewijs voor het frameprobleem;
+ze garandeert niet dat de door Threads mogelijk geblokkeerde controle werkt.
+Download Diagnose in het extensiemenu na enkele controles en deel het JSON-
+bestand hier. Beveiligingsheaders worden niet omzeild.
+
+UPDATE 0.1.8
+Geen nieuwe tabs: controles laden Replies in verborgen frames binnen dezelfde
+Threads-pagina. Als Threads embedding blokkeert of de frames niet rendert,
+wordt de controle oranje. Er bestaat geen fallback naar tabs en er worden geen
+beveiligingsheaders omzeild. De frame-route is experimenteel, niet live getest.
+Bolletje staat binnen dezelfde naamlink op één horizontale regel. Alleen links
+met exact de gebruikersnaam krijgen een bolletje; navigatiemenu's zijn uitgesloten.
+De bolletjes zijn toetsenbordbedienbaar en klikken navigeert niet naar het profiel.
+Na updaten: extensie herladen, Threads vernieuwen. Oude controletabs kunnen bij
+herladen niet altijd automatisch worden gesloten: sluit alleen de oude tijdelijke
+Threads-profieltabs zelf. De nieuwe versie maakt geen nieuwe tabs.
+
+UPDATE 0.1.7
+Bolletje staat als aparte knop direct naast de gebruikersnaam, buiten de link.
+Klikken wisselt groen/rood zonder popup of navigatie. Een witte/oranje knop
+wordt bij klikken groen. Handmatige groen/roodkeuzes blijven bewaard en worden
+niet overschreven door automatische controles. Lokale gegevens wissen in het
+extensiemenu verwijdert deze keuzes samen met de cache.
+Acht gelijktijdige controles, zichtbare accounts eerst. Scrollen actualiseert
+de prioriteit. DOM-updates worden per beeldframe samengevoegd. Cachewijzigingen
+worden direct verwerkt zonder de hele lokale opslag opnieuw in te lezen.
+Bestaande geldige cache blijft bij deze update bewaard, dus geen volledige
+hercontrole na installatie. Acht tabs kunnen meer geheugen/verkeer gebruiken.
+Laadsnelheid van Threads blijft de grens. Geen gemeten éénsecondegarantie.
+
+UPDATE 0.1.6
+Vier gelijktijdige controles en voorrang voor zichtbare accounts. Accounts tot
+ongeveer drie schermhoogten vooruit krijgen daarna voorrang op overige items.
+Alleen al in de DOM geladen feeditems kunnen worden vooruitgelezen.
+Een handmatig profielbezoek schrijft geen automatische beoordeling meer weg.
+Elke achtergrondcontrole vervangt de eigen reactie-evidence als één resultaat.
+Oude automatische cache wordt eenmalig gewist; handmatige keuzes blijven staan.
+Klik rechtstreeks op een rood bolletje voor Altijd tonen: groen, ook als het
+account niet recent heeft gereageerd. Tooltip vermeldt jouw handmatige keuze.
+Klik het groene bolletje voor het menu en Automatische beoordeling gebruiken
+om de uitzondering weer op te heffen. Deze uitzondering overleeft herstarts.
+Maximaal vier tijdelijke tabs kunnen extra geheugen gebruiken. Nieuwe profielen
+blijven afhankelijk van de laadsnelheid van Threads; geen éénsecondegarantie.
+
+UPDATE 0.1.5
+Vaste 18-secondenwachttijd en de 3-secondenpauze tussen accounts verwijderd.
+Een geverifieerde recente reply rondt de controle direct af na opslaan.
+Lege/oude resultaten wachten kort op stabiliteit van de geladen reply-elementen.
+De volgende controle start aansluitend. De timeout geldt alleen als geen
+bruikbaar resultaat verschijnt. Reeds bekende resultaten verschijnen uit cache.
+Eén seconde totaal voor onbekende accounts is niet gegarandeerd: Threads moet
+de profielpagina nog laden. Deze snelheid is niet op de live site gemeten.
+
+UPDATE 0.1.4
+Automatisch rood bij een expliciete lege Replies-weergave of als alle gevonden
+verifieerbare eigen replies buiten de ingestelde periode vallen. Rood bij oude
+replies is gebaseerd op de nieuwste waargenomen reply; deze test controleert
+niet of Threads de volledige, correct gesorteerde geschiedenis heeft geladen.
+Groen bij een verifieerbare recente eigen reply, oranje bij een mislukte controle,
+wit terwijl het account nog wacht. Handmatig rood blijft mogelijk.
+Diagnose downloaden in het menu exporteert gebruikersnamen, datums, pagina-
+structuur en redenen. Geen berichtteksten, cookies of wachtwoorden. Het bestand
+wordt niet automatisch verzonden. Deel het hier om herkenningsproblemen te onderzoeken.
+De live herkenning is nog niet bewezen en kan bij jou oranje blijven.
+
+UPDATE 0.1.3
+Achtergrondcontrole staat na deze update automatisch aan.
+Accounts uit de feed worden automatisch in een wachtrij gezet. De extensie
+opent één tijdelijke achtergrondtab tegelijk, rechtstreeks op /@naam/replies.
+De popup toont het gecontroleerde account en het aantal wachtende accounts.
+Geen limiet van tien accounts meer; maximaal honderd wachtende accounts.
+Succesvolle controles worden na 24 uur vernieuwd, onduidelijke na één uur.
+Handmatige controle via een bolletje kan eerder opnieuw proberen.
+De wachtrij blijft behouden als de Chrome service worker tijdelijk stopt.
+Er worden gewone achtergrondtabs geopend, geen volledig onzichtbare browser.
+Wit blijft mogelijk als Replies afgeschermd is of de pagina niet herkend wordt.
+Klik het bolletje voor de reden. Wit is geen bewijs van inactiviteit.
+Deze versie is niet op jouw ingelogde Threads-DOM getest.
+
+UPDATE 0.1.2
+Kies Eigen aantal maanden in de popup en vul bijvoorbeeld 6 of 18 in.
+De grens gebruikt kalendermaanden, niet een vaste 30-dagenbenadering.
+Instellingen worden automatisch opgeslagen zodra je de invoer bevestigt
+met Enter of het veld verlaat.
+
+UPDATE 0.1.1
+Groen vereist nu een expliciete replyweergave en een datumlink naar een post
+van dezelfde auteur. Bij twijfel blijft het bolletje grijs. Oude automatische
+beoordelingen tellen niet meer mee. Klik op het bolletje voor de gebruikte datum
+en een link naar de waargenomen reactie.
+
+THREADS ACTIVITY FILTER 0.1 — EXPERIMENTELE TEST
+
+Installeren op Chrome voor Windows, macOS of Linux:
+1. Pak de ZIP uit.
+2. Open chrome://extensions
+3. Zet Ontwikkelaarsmodus aan.
+4. Klik Uitgepakte extensie laden en kies de map met manifest.json.
+5. Open Threads of vernieuw een reeds geopende Threads-tab.
+
+Gebruik:
+Klik op het extensie-icoon. Standaard worden accounts alleen gemarkeerd.
+Zet Achtergrondcontrole aan voor controles via tijdelijk geopende achtergrondtabs.
+Er wordt maximaal één profiel tegelijk gecontroleerd, maximaal tien nieuwe
+accounts per service-worker-sessie. Dit is een beperkte test, geen onbeperkte scanner.
+Een browserherstart of herladen van de extensie geeft een nieuwe testbatch.
+Klik op het bolletje naast een gebruikersnaam om een account te controleren,
+het profiel zelf te openen, handmatig inactief te markeren of te resetten.
+
+Groen: een recente eigen reply is in een herkenbare Replies-tab waargenomen.
+Rood: uitsluitend jouw handmatige beoordeling.
+Grijs: onvoldoende informatie, ook bij mislukte controles of oudere replies.
+Accounts worden nooit automatisch rood omdat geen replies zijn gevonden.
+Verbergen geldt alleen voor rood gemarkeerde accounts en herkenbare postkaarten.
+
+Belangrijke beperking:
+Deze versie gebruikt heuristieken voor de live Threads-interface. De code is
+gecontroleerd maar niet op een ingelogde Threads-feed getest. De actuele DOM,
+tablabels, vertalingen of poststructuur kunnen afwijken. Daardoor kunnen
+bolletjes of achtergrondcontroles ontbreken. Groen is een waargenomen aanwijzing,
+geen bewezen complete analyse van de replygeschiedenis. Quotes/geneste posts
+kunnen de herkenning verstoren. Voor een betrouwbare automatische inactiefstatus
+is aanvullende verificatie nodig. Een feedpost alleen bevat die informatie niet.
+
+Vooruitkijken:
+Nieuwe posts in de DOM worden verwerkt, ook onder het zichtbare scherm.
+Nog niet door Threads in de DOM geplaatste feeditems zijn niet toegankelijk.
+Onbekende posts blijven staan; het laden van Threads wordt niet geblokkeerd.
+
+Privacy:
+Alleen gebruikersnamen, waargenomen replydatums en jouw beoordelingen worden
+lokaal in Chrome bewaard. Geen eigen server, externe dienst, API-token,
+netwerkonderschepping of wachtwoordtoegang. Profielcontroles bezoeken Threads
+met jouw bestaande browsersessie. Verwijderen van de extensie wist de opslag.
+
+Diagnose:
+Zie je geen bolletjes? Controleer of de extensie aan staat en vernieuw Threads.
+Blijft een profiel grijs? Open het zelf, klik Replies/Reacties en wacht even.
+Nog steeds grijs betekent dat deze versie de informatie niet betrouwbaar herkent.
+Gebruik handmatige markeringen om het filtergedrag wel te testen.
+Deactiveer de verbergoptie om alles direct weer zichtbaar te maken.
