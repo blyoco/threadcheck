@@ -38,11 +38,14 @@ def build():
     for name, mf, prefix in (('chrome', chrome, SRC + '/'), ('firefox', firefox, '')):
         path = os.path.join('dist', f'threads-activity-filter-{name}-{version}.zip')
         with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as z:
-            for f in sorted(os.listdir(SRC)):
-                if f == 'manifest.json':
-                    z.writestr(prefix + f, json.dumps(mf, indent=2, ensure_ascii=False))
-                else:
-                    z.write(os.path.join(SRC, f), prefix + f)
+            for root, dirs, files in os.walk(SRC):
+                dirs.sort()
+                for f in sorted(files):
+                    rel = os.path.relpath(os.path.join(root, f), SRC).replace(os.sep, '/')
+                    if rel == 'manifest.json':
+                        z.writestr(prefix + rel, json.dumps(mf, indent=2, ensure_ascii=False))
+                    else:
+                        z.write(os.path.join(root, f), prefix + rel)
         print(path)
 
 

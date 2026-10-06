@@ -9,7 +9,7 @@ const HOSTS=['threads.com','www.threads.com','threads.net','www.threads.net'];
 async function claim(user){
  const data=await chrome.storage.local.get(key(user)),record=data[key(user)];
  if(!ThreadsEvidence.due(record))return {ok:false};
- await chrome.storage.local.set({[key(user)]:{...record,status:'checking',checkingSince:Date.now(),reason:'Replies worden opgehaald'}});
+ await chrome.storage.local.set({[key(user)]:{...record,status:'checking',checkingSince:Date.now(),reason:'fetching'}});
  return {ok:true};
 }
 async function store(user,m){
@@ -24,7 +24,7 @@ async function store(user,m){
  }
  // Een gelukte controle vervangt het oude resultaat; een mislukte laat het laatst bekende resultaat staan.
  if(ok){record.result=m.result;if(m.result==='empty'){delete record.reply;delete record.url;delete record.evidenceVersion;}}
- await chrome.storage.local.set({[key(user)]:{...record,checked:Date.now(),status:ok?'observed':'unknown',scanVersion:ThreadsEvidence.SCAN,diagnostics:m.diagnostics||null,reason:String(m.reason||'Controle niet bevestigd').slice(0,200)}});
+ await chrome.storage.local.set({[key(user)]:{...record,checked:Date.now(),status:ok?'observed':'unknown',scanVersion:ThreadsEvidence.SCAN,diagnostics:m.diagnostics||null,reason:String(m.reason||'notConfirmed').slice(0,40),reasonInfo:Number.isInteger(m.reasonInfo)?m.reasonInfo:null}});
  return {ok:true};
 }
 chrome.runtime.onMessage.addListener((m,s,reply)=>{

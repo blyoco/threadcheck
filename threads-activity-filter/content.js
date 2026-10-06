@@ -9,6 +9,14 @@
  const key=u=>'account:'+u;
  function userOf(a){try{const u=new URL(a.href);if(!HOSTS.includes(u.hostname))return null;return u.pathname.match(/^\/@([a-z0-9._]+)\/?$/i)?.[1]?.toLowerCase();}catch{return null;}}
  function state(u){return ThreadsEvidence.classify(accounts[key(u)],settings.days,Date.now(),settings.months);}
+ function tip(u,st){
+  const r=accounts[key(u)]||{},L=ThreadsI18n.lang(settings.lang),t=(k,...a)=>ThreadsI18n.t(L,k,...a);
+  const date=x=>new Date(x).toLocaleDateString(L==='nl'?'nl-NL':'en-GB',{dateStyle:'medium'});
+  if(st==='active')return r.manual==='active'?t('tipManualActive'):t('tipReply',date(r.reply));
+  if(st==='inactive')return r.manual==='inactive'?t('tipManualInactive'):r.result==='observed'?t('tipOldReply',date(r.reply)):t('tipNoReplies');
+  if(st==='error')return (r.reason?ThreadsI18n.reason(L,r.reason,r.reasonInfo)+' ':'')+t('tipRetry');
+  return r.status==='checking'?t('tipChecking'):t('tipQueued');
+ }
  function cardOf(a){let n=a.parentElement;for(let i=0;n&&i<9;i++,n=n.parentElement){const ids=new Set([...n.querySelectorAll('a[href*="/post/"]')].map(x=>x.pathname));if(n.querySelector('time')&&ids.size===1)return n;}return null;}
 
  function scan(){
@@ -34,9 +42,9 @@
     }else if(b.parentElement!==a||a.firstChild!==b){a.prepend(b);}
 
     b.dataset.user=u;
-    b.setAttribute('aria-label',state(u)==='active'?'Account rood maken':'Account groen maken');
     const st=state(u),txt={active:'🟢',inactive:'🔴',unknown:'⚪',error:'🟠'}[st];if(b.textContent!==txt)b.textContent=txt;
-    b.title={active:accounts[key(u)]?.manual==='active'?'Altijd tonen: jouw keuze':'Eigen reply: '+new Date(accounts[key(u)]?.reply).toLocaleString('nl-NL'),inactive:accounts[key(u)]?.manual==='inactive'?'Verbergen: jouw keuze':accounts[key(u)]?.result==='observed'?'Laatste eigen reply: '+new Date(accounts[key(u)]?.reply).toLocaleString('nl-NL'):'Geen eigen replies gevonden',error:accounts[key(u)]?.reason||'Controle mislukt: geen oordeel over activiteit',unknown:accounts[key(u)]?.status==='checking'?'Wordt op achtergrond gecontroleerd':(accounts[key(u)]?.reason||'In wachtrij of nog onbekend')}[st];
+    b.setAttribute('aria-label',ThreadsI18n.t(ThreadsI18n.lang(settings.lang),st==='active'?'markRed':'markGreen'));
+    b.title=tip(u,st);
     const card=cardOf(a);if(card){const author=[...card.querySelectorAll('a[href]')].find(x=>userOf(x)&&x.textContent.trim());if(author===a)card.classList.toggle('ta-hidden',settings.hide&&st==='inactive');}
     if(settings.auto&&!active.has(u)&&ThreadsEvidence.due(accounts[key(u)])&&Date.now()-(lastQueued.get(u)||0)>1000){
      lastQueued.set(u,Date.now());const rect=a.getBoundingClientRect();checks.push({user:u,priority:rect.bottom>=0&&rect.top<innerHeight?0:rect.top>=innerHeight&&rect.top<innerHeight*3?1:2});
@@ -75,11 +83,11 @@
    diagnostics.status=res.status;
    if(res.status===429)return {rateLimited:true};
    const path=new URL(res.url).pathname.replace(/\/$/,'').toLowerCase();diagnostics.finalPath=path;
-   if(!res.ok||path!=='/@'+user+'/replies')return {retry:true,reason:'Threads gaf geen Replies-pagina terug ('+res.status+')',diagnostics};
+   if(!res.ok||path!=='/@'+user+'/replies')return {retry:true,reason:'noRepliesPage',reasonInfo:res.status,diagnostics};
    const blob=await readBlob(res,diagnostics);
-   if(!blob)return {retry:true,reason:'Replies-gegevens niet gevonden in de pagina',diagnostics};
+   if(!blob)return {retry:true,reason:'dataMissing',diagnostics};
    let media=null;JSON.parse(blob,(k,v)=>{if(k==='mediaData'&&v&&Array.isArray(v.edges))media=v;return v;});
-   if(!media)return {retry:true,reason:'Replies-gegevens niet leesbaar',diagnostics};
+   if(!media)return {retry:true,reason:'dataUnreadable',diagnostics};
    let newest=0,code=null,own=0;
    for(const edge of media.edges)for(const item of edge?.node?.thread_items||[]){
     const post=item?.post,info=post?.text_post_app_info||{};
@@ -91,11 +99,11 @@
     if(Number.isFinite(time)&&time>newest&&/^[\w-]+$/.test(post.code||'')){newest=time;code=post.code;}
    }
    Object.assign(diagnostics,{threads:media.edges.length,ownItems:own,more:!!media.page_info?.has_next_page});
-   if(newest)return {result:'observed',evidence:{user,datetime:new Date(newest).toISOString(),url:location.origin+'/@'+user+'/post/'+code},reason:'Eigen reply gevonden',diagnostics};
-   return {result:'empty',reason:media.edges.length?'Alleen reacties binnen eigen draadjes gevonden':'Replies-pagina is leeg',diagnostics};
+   if(newest)return {result:'observed',evidence:{user,datetime:new Date(newest).toISOString(),url:location.origin+'/@'+user+'/post/'+code},reason:'replyFound',diagnostics};
+   return {result:'empty',reason:media.edges.length?'ownThreadsOnly':'empty',diagnostics};
   }catch(e){
    diagnostics.error=e.name;
-   return {retry:true,reason:e.name==='AbortError'?'Threads reageerde niet binnen 15 seconden':'Netwerkfout bij controle',diagnostics};
+   return {retry:true,reason:e.name==='AbortError'?'timeout':'network',diagnostics};
   }finally{clearTimeout(timeout);diagnostics.elapsedMs=Date.now()-started;}
  }
  // Lees de pagina als stream en stop zodra het Replies-blok binnen is (scheelt ~40% downloaden).

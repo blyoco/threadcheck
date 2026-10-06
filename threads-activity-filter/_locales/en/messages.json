@@ -1,0 +1,8 @@
+{
+  "extName": {
+    "message": "Threads Activity Filter"
+  },
+  "extDescription": {
+    "message": "Shows a coloured dot in front of every Threads username: green if the account replies to other people, red if it does not."
+  }
+}

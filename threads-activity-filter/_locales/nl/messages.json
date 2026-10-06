@@ -1,0 +1,8 @@
+{
+  "extName": {
+    "message": "Threads Activity Filter"
+  },
+  "extDescription": {
+    "message": "Toont een gekleurd bolletje voor elke Threads-gebruikersnaam: groen als het account op anderen reageert, rood als dat niet zo is."
+  }
+}

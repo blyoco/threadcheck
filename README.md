@@ -158,7 +158,8 @@ Go to **threads.com**. If Threads was already open, press **F5** to refresh. Aft
 ## Using it
 
 - **Change a colour yourself:** tap or click the dot. Green becomes red, red becomes green.
-- **Settings:** open the add-on menu. In Chrome, click the puzzle piece icon at the top right. On Android, tap **⋮** → **Extensions**. There you can choose how far back to look (30 days, 90 days, 1 year or your own number of months) and choose to hide red accounts. This menu is currently in Dutch.
+- **Settings:** open the add-on menu. In Chrome, click the puzzle piece icon at the top right. On Android, tap **⋮** → **Extensions**. There you can choose how far back to look (30 days, 90 days, 1 year or your own number of months) and choose to hide red accounts.
+- **Language:** the add-on uses the language of your browser automatically (English or Dutch). To change it, open the add-on menu and choose **English** or **Nederlands** under **Language**.
 
 ## Questions
 
@@ -194,8 +195,9 @@ To build locally, run `python bouw.py`; the zip files end up in `dist/`.
 
 ## Changelog
 
+- **0.2.3** – Menu and tooltips in English and Dutch. Follows the browser language, or choose it yourself in the menu.
 - **0.2.2** – Firefox updates itself automatically via GitHub releases.
 - **0.2.1** – Firefox support, on computer and Android.
 - **0.2.0** – New check method: reads replies from the page data instead of hidden frames, which Threads blocks. About 0.5–1 second per account, six at a time.
 
-Older notes (in Dutch) are in [LEESMIJ.txt](threads-activity-filter/LEESMIJ.txt).
+Older notes (in Dutch) are in [LEESMIJ.txt](LEESMIJ.txt).

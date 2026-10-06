@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Threads Activity Filter • Test",
-  "version": "0.2.2",
-  "description": "Lokale test: markeer reply-activiteit en verberg handmatig gemarkeerde accounts.",
+  "name": "__MSG_extName__",
+  "version": "0.2.3",
+  "default_locale": "en",
+  "description": "__MSG_extDescription__",
   "permissions": [
     "storage"
   ],
@@ -10,6 +11,7 @@
     "service_worker": "background.js"
   },
   "action": {
+    "default_title": "__MSG_extName__",
     "default_popup": "popup.html"
   },
   "content_scripts": [
@@ -22,6 +24,7 @@
       ],
       "js": [
         "evidence.js",
+        "i18n.js",
         "content.js"
       ],
       "css": [
