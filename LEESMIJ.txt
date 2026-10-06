@@ -1,3 +1,10 @@
+UPDATE 0.2.4 — HELE BERICHT VERBERGEN
+"Verberg rode accounts" verborg alleen de kopregel (naam en tijd), omdat
+die ook een tijd en een berichtlink bevat. Nu wordt het hele bericht
+verborgen: Threads zet elk bericht in een [data-pressable-container].
+Op het profiel of bericht van een account dat je zelf opent, wordt niets
+verborgen.
+
 UPDATE 0.2.3 — ENGELS EN NEDERLANDS
 Menu, tooltips, naam en omschrijving zijn nu Engels en Nederlands.
 Standaard volgt de taal de browser (Nederlandse browser = Nederlands,

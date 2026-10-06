@@ -232,6 +232,7 @@ To build locally, run `python bouw.py`; the zip files end up in `dist/`.
 
 ## Changelog
 
+- **0.2.4** – "Hide red accounts" now hides the whole post, not just the name. Nothing is hidden on the profile or post page of the account you opened yourself.
 - **0.2.3** – Menu and tooltips in English and Dutch. Follows the browser language, or choose it yourself in the menu.
 - **0.2.2** – Firefox updates itself automatically via GitHub releases.
 - **0.2.1** – Firefox support, on computer and Android.

@@ -17,7 +17,18 @@
   if(st==='error')return (r.reason?ThreadsI18n.reason(L,r.reason,r.reasonInfo)+' ':'')+t('tipRetry');
   return r.status==='checking'?t('tipChecking'):t('tipQueued');
  }
- function cardOf(a){let n=a.parentElement;for(let i=0;n&&i<9;i++,n=n.parentElement){const ids=new Set([...n.querySelectorAll('a[href*="/post/"]')].map(x=>x.pathname));if(n.querySelector('time')&&ids.size===1)return n;}return null;}
+ // Het hele bericht: Threads zet elk bericht in een [data-pressable-container]. Anders het hoogste blok
+ // met precies één bericht (niet het eerste: de kopregel met naam en tijd telt ook als één bericht).
+ function cardOf(a){
+  const card=a.closest('[data-pressable-container]');if(card)return card;
+  let found=null;
+  for(let n=a.parentElement,i=0;n&&n!==document.body&&i<15;i++,n=n.parentElement){
+   const ids=new Set([...n.querySelectorAll('a[href*="/post/"]')].map(x=>x.pathname));
+   if(ids.size>1)break;
+   if(ids.size===1&&n.querySelector('time'))found=n;
+  }
+  return found;
+ }
 
  function scan(){
   if(running)return;running=true;
@@ -45,7 +56,9 @@
     const st=state(u),txt={active:'🟢',inactive:'🔴',unknown:'⚪',error:'🟠'}[st];if(b.textContent!==txt)b.textContent=txt;
     b.setAttribute('aria-label',ThreadsI18n.t(ThreadsI18n.lang(settings.lang),st==='active'?'markRed':'markGreen'));
     b.title=tip(u,st);
-    const card=cardOf(a);if(card){const author=[...card.querySelectorAll('a[href]')].find(x=>userOf(x)&&x.textContent.trim());if(author===a)card.classList.toggle('ta-hidden',settings.hide&&st==='inactive');}
+    // Op het eigen profiel of bericht van dit account niets verbergen: dat heb je dan bewust geopend.
+    const ownPage=location.pathname.split('/')[1]?.toLowerCase()==='@'+u;
+    const card=cardOf(a);if(card){const author=[...card.querySelectorAll('a[href]')].find(x=>userOf(x)&&x.textContent.trim());if(author===a)card.classList.toggle('ta-hidden',settings.hide&&st==='inactive'&&!ownPage);}
     if(settings.auto&&!active.has(u)&&ThreadsEvidence.due(accounts[key(u)])&&Date.now()-(lastQueued.get(u)||0)>1000){
      lastQueued.set(u,Date.now());const rect=a.getBoundingClientRect();checks.push({user:u,priority:rect.bottom>=0&&rect.top<innerHeight?0:rect.top>=innerHeight&&rect.top<innerHeight*3?1:2});
     }
