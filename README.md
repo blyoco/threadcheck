@@ -11,6 +11,22 @@ A free add-on for the [Threads](https://www.threads.com) website. It puts a colo
 
 You can tap or click a dot to change its colour yourself.
 
+## What it looks like
+
+*Names, profile pictures and posts are hidden in these examples for privacy.*
+
+**In your feed:** a dot in front of every name.
+
+![Feed with a green and a red dot in front of the names](docs/screenshots/feed.png)
+
+**On a profile and in replies:** the same dots appear everywhere a name is shown.
+
+![Profile page with dots in front of the names in the replies](docs/screenshots/profile.png)
+
+**The menu:** choose how far back to look, hide red accounts and pick your language.
+
+<img src="docs/screenshots/menu.png" alt="The add-on menu" width="300">
+
 ---
 
 ## Before you start
