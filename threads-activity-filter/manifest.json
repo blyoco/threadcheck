@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Threads Activity Filter • Test",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Lokale test: markeer reply-activiteit en verberg handmatig gemarkeerde accounts.",
   "permissions": [
     "storage"

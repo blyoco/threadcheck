@@ -1,3 +1,15 @@
+UPDATE 0.2.2 — AUTOMATISCHE UPDATES IN FIREFOX
+De Firefox-versie werkt zichzelf voortaan automatisch bij via GitHub
+(github.com/blyoco/threadcheck). Firefox kijkt periodiek in updates.json
+en installeert een hogere versie vanzelf. Dit werkt vanaf deze versie;
+wie een oudere versie had, installeert 0.2.2 eenmalig met de hand.
+Ondertekenen bij Mozilla gebeurt nu automatisch door GitHub: verhoog het
+versienummer in manifest.json en push naar main. Zie README.md voor de
+eenmalige instelling (AMO-sleutels als GitHub-secrets).
+De handmatige upload-stappen hieronder bij 0.2.1 zijn daardoor niet meer
+nodig. Chrome werkt nog niet automatisch bij: download de nieuwe zip uit
+de GitHub-releases.
+
 UPDATE 0.2.1 — OOK OP ANDROID (FIREFOX)
 Dezelfde extensie werkt nu ook in Firefox, ook Firefox voor Android.
 Let op: alleen in de browser op threads.com, niet in de Threads-app.
