@@ -6,6 +6,11 @@
           "version": "0.2.3",
           "update_link": "https://github.com/blyoco/threadcheck/releases/download/v0.2.3/threadcheck-firefox.xpi",
           "update_hash": "sha256:9422132d2fe7d9c34803f247313ef5934fd048cf297733e7ea97ef4e851f2b16"
+        },
+        {
+          "version": "0.2.4",
+          "update_link": "https://github.com/blyoco/threadcheck/releases/download/v0.2.4/threadcheck-firefox.xpi",
+          "update_hash": "sha256:a478aecd3f4321927ddba566d90b0c1244fd62a1d1017bbcdb99cb9895ca4d3b"
         }
       ]
     }
